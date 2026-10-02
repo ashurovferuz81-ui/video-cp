@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with personal username and contact info",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "username": { "type": "string", "maxLength": 50, "pattern": "^@[a-zA-Z0-9_]+$" },
+        "email": { "type": "string", "maxLength": 150 },
+        "avatar": { "type": "string", "maxLength": 500 },
+        "city": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["online", "away", "offline"] },
+        "lastSeen": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "username", "createdAt"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Chat conversation between users",
+      "type": "object",
+      "properties": {
+        "participants": { "type": "array", "description": "Array of participant UIDs" },
+        "participantUsernames": { "type": "array" },
+        "lastMessageText": { "type": "string", "maxLength": 2000 },
+        "lastMessageSenderId": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["participants", "updatedAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Individual message in a conversation",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "senderUsername": { "type": "string", "maxLength": 50 },
+        "text": { "type": "string", "maxLength": 2000 },
+        "imageUrl": { "type": "string", "maxLength": 1000 },
+        "isAudio": { "type": "boolean" },
+        "audioDuration": { "type": "number" },
+        "isMeetInvite": { "type": "boolean" },
+        "meetUri": { "type": "string", "maxLength": 500 },
+        "meetCode": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["senderId", "text", "createdAt"]
+    },
+    "CallSession": {
+      "title": "CallSession",
+      "description": "WebRTC real in-app audio/video call room signaling",
+      "type": "object",
+      "properties": {
+        "callerId": { "type": "string" },
+        "callerName": { "type": "string", "maxLength": 100 },
+        "callerUsername": { "type": "string", "maxLength": 50 },
+        "callerAvatar": { "type": "string", "maxLength": 500 },
+        "recipientId": { "type": "string" },
+        "recipientName": { "type": "string", "maxLength": 100 },
+        "recipientUsername": { "type": "string", "maxLength": 50 },
+        "type": { "type": "string", "enum": ["video", "audio"] },
+        "status": { "type": "string", "enum": ["calling", "connected", "ended", "rejected"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["callerId", "recipientId", "type", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Registered app users"
+    },
+    "/conversations/{conversationId}": {
+      "schema": "Conversation",
+      "description": "Active conversations"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Messages inside conversations"
+    },
+    "/calls/{callId}": {
+      "schema": "CallSession",
+      "description": "Real-time in-app call sessions"
+    },
+    "/calls/{callId}/callerCandidates/{candidateId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Caller ICE candidates for WebRTC"
+    },
+    "/calls/{callId}/recipientCandidates/{candidateId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Recipient ICE candidates for WebRTC"
+    }
+  }
+}

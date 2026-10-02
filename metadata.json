@@ -1,0 +1,6 @@
+{
+  "name": "Aloqa - Rossiya va O'zbekiston Muloqot Markazi",
+  "description": "Rossiyadagi tanishlar, do'stlar va yaqinlar bilan qulay xabar almashish, tezkor tarjima, vaqt zonalari, valyuta kursi va Google Meet video qo'ng'iroqlari ilovasi.",
+  "requestFramePermissions": ["camera", "microphone", "display-capture"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
